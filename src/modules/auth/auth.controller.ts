@@ -1,18 +1,30 @@
 import type { Request, Response, NextFunction } from "express";
+<<<<<<< HEAD
 import { registerSchema, loginSchema } from "./auth.validation.js";
+=======
+import { ZodError } from "zod";
+import { registerSchema } from "./auth.validation.js";
+>>>>>>> 7316bdfad4af2202da96652d2cfaad5b1e6d8e3a
 import { AuthService } from "./auth.service.js";
 
 const authService = new AuthService();
 
 export class AuthController {
+<<<<<<< HEAD
   // ─── Register ──────────────────────────────────────────────────────────────
 
+=======
+>>>>>>> 7316bdfad4af2202da96652d2cfaad5b1e6d8e3a
   public register = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
     try {
+<<<<<<< HEAD
+=======
+      // Validate request body with Zod schema
+>>>>>>> 7316bdfad4af2202da96652d2cfaad5b1e6d8e3a
       const parsed = registerSchema.safeParse(req.body);
 
       if (!parsed.success) {
@@ -27,7 +39,10 @@ export class AuthController {
       const result = await authService.registerUser(parsed.data);
 
       res.status(201).json({
+<<<<<<< HEAD
         success: true,
+=======
+>>>>>>> 7316bdfad4af2202da96652d2cfaad5b1e6d8e3a
         message: "Registration successful",
         data: {
           user: result.user,
@@ -35,6 +50,7 @@ export class AuthController {
         },
       });
     } catch (error) {
+<<<<<<< HEAD
       next(error);
     }
   };
@@ -79,6 +95,9 @@ export class AuthController {
         },
       });
     } catch (error) {
+=======
+      // Pass service errors (409, 500, etc.) to the global error handler
+>>>>>>> 7316bdfad4af2202da96652d2cfaad5b1e6d8e3a
       next(error);
     }
   };
