@@ -1,0 +1,41 @@
+import type { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
+import { registerSchema } from "./auth.validation.js";
+import { AuthService } from "./auth.service.js";
+
+const authService = new AuthService();
+
+export class AuthController {
+  public register = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      // Validate request body with Zod schema
+      const parsed = registerSchema.safeParse(req.body);
+
+      if (!parsed.success) {
+        res.status(400).json({
+          success: false,
+          message: "Validation error",
+          errors: parsed.error.flatten().fieldErrors,
+        });
+        return;
+      }
+
+      const result = await authService.registerUser(parsed.data);
+
+      res.status(201).json({
+        message: "Registration successful",
+        data: {
+          user: result.user,
+          accessToken: result.accessToken,
+        },
+      });
+    } catch (error) {
+      // Pass service errors (409, 500, etc.) to the global error handler
+      next(error);
+    }
+  };
+}
