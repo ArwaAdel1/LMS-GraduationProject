@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { registerSchema } from "./auth.validation.js";
+import { forgotPasswordSchema, registerSchema, resetPasswordSchema } from "./auth.validation.js";
 import { AuthService } from "./auth.service.js";
 
 const authService = new AuthService();
@@ -35,6 +35,54 @@ export class AuthController {
       });
     } catch (error) {
       // Pass service errors (409, 500, etc.) to the global error handler
+      next(error);
+    }
+  };
+
+  public forgotPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const parsed = forgotPasswordSchema.safeParse(req.body);
+
+      if (!parsed.success) {
+        res.status(400).json({
+          success: false,
+          message: "Validation error",
+          errors: parsed.error.flatten().fieldErrors,
+        });
+        return;
+      }
+
+      const response = await authService.forgotPassword(parsed.data);
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public resetPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const parsed = resetPasswordSchema.safeParse(req.body);
+
+      if (!parsed.success) {
+        res.status(400).json({
+          success: false,
+          message: "Validation error",
+          errors: parsed.error.flatten().fieldErrors,
+        });
+        return;
+      }
+
+      const response = await authService.resetPassword(parsed.data);
+      res.status(200).json(response);
+    } catch (error) {
       next(error);
     }
   };

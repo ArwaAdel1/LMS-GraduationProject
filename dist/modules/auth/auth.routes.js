@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { AuthController } from "./auth.controller.js";
-import { asyncHandler } from "../../shared/utils/asyncHandler.js";
-import { validateRequest } from "../../shared/middlewares/validate.middleware.js";
-import { loginSchema, registerSchema } from "./auth.validation.js";
 const router = Router();
 const controller = new AuthController();
-router.post("/register", validateRequest(registerSchema), asyncHandler(controller.register));
-router.post("/login", validateRequest(loginSchema), asyncHandler(controller.login));
+// POST /api/v1/auth/register
+router.post("/register", controller.register);
+// POST /api/v1/auth/forgot-password
+router.post("/forgot-password", controller.forgotPassword);
+// POST /api/v1/auth/reset-password
+router.post("/reset-password", controller.resetPassword);
 export default router;
 //# sourceMappingURL=auth.routes.js.map

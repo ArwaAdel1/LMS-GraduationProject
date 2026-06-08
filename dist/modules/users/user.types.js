@@ -4,6 +4,8 @@ export const userPublicFields = {
     email: true,
     mobile: true,
     role: true,
+    status: true,
+    tenantId: true,
     createdAt: true,
     updatedAt: true,
 };

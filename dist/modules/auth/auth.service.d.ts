@@ -1,35 +1,28 @@
-import { AuthRepository } from "./auth.repository.js";
+import { Role, Status } from "../../generated/prisma/client.js";
 import { TokenService } from "./token.service.js";
-import type { LoginInput, RegisterInput } from "./auth.types.js";
+import type { RegisterInput, ForgotPasswordInput, ResetPasswordInput } from "./auth.validation.js";
 export declare class AuthService {
-    private readonly authRepository;
     private readonly tokenService;
-    constructor(authRepository?: AuthRepository, tokenService?: TokenService);
-    register(input: RegisterInput): Promise<{
+    constructor(tokenService?: TokenService);
+    registerUser(input: RegisterInput): Promise<{
         user: {
-            id: string;
             fullName: string;
-            email: string;
             mobile: string;
-            role: import("../../generated/prisma/enums.js").Role;
+            email: string | null;
+            role: Role;
+            id: string;
+            status: Status;
+            tenantId: string;
             createdAt: Date;
             updatedAt: Date;
         };
         accessToken: string;
-        refreshToken: string;
     }>;
-    login(input: LoginInput): Promise<{
-        user: {
-            id: string;
-            fullName: string;
-            email: string;
-            mobile: string;
-            role: import("../../generated/prisma/enums.js").Role;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-        accessToken: string;
-        refreshToken: string;
+    forgotPassword(input: ForgotPasswordInput): Promise<{
+        message: string;
+    }>;
+    resetPassword(input: ResetPasswordInput): Promise<{
+        message: string;
     }>;
 }
 //# sourceMappingURL=auth.service.d.ts.map

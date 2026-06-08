@@ -1,10 +1,12 @@
-import type { Role } from "../../generated/prisma/client.js";
+import type { Role, Status } from "../../generated/prisma/client.js";
 export interface UserRecord {
     id: string;
     fullName: string;
-    email: string;
+    email: string | null;
     mobile: string;
     role: Role;
+    status: Status;
+    tenantId: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -15,6 +17,8 @@ export declare const userPublicFields: {
     readonly email: true;
     readonly mobile: true;
     readonly role: true;
+    readonly status: true;
+    readonly tenantId: true;
     readonly createdAt: true;
     readonly updatedAt: true;
 };

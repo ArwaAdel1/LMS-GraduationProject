@@ -14,7 +14,6 @@
  * model files in the `model` directory!
  */
 import * as runtime from "@prisma/client/runtime/client";
-import {} from "./class.js";
 /**
  * Prisma Errors
  */
@@ -68,7 +67,10 @@ export const JsonNull = runtime.JsonNull;
  */
 export const AnyNull = runtime.AnyNull;
 export const ModelName = {
-    User: 'User'
+    User: 'User',
+    StudentProfile: 'StudentProfile',
+    Otp: 'Otp',
+    RefreshToken: 'RefreshToken'
 };
 /**
  * Enums
@@ -86,8 +88,31 @@ export const UserScalarFieldEnum = {
     password: 'password',
     mobile: 'mobile',
     role: 'role',
+    status: 'status',
+    tenantId: 'tenantId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
+};
+export const StudentProfileScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const OtpScalarFieldEnum = {
+    id: 'id',
+    code: 'code',
+    type: 'type',
+    userId: 'userId',
+    expiresAt: 'expiresAt',
+    usedAt: 'usedAt',
+    createdAt: 'createdAt'
+};
+export const RefreshTokenScalarFieldEnum = {
+    id: 'id',
+    token: 'token',
+    createdAt: 'createdAt',
+    userId: 'userId'
 };
 export const SortOrder = {
     asc: 'asc',
@@ -96,6 +121,10 @@ export const SortOrder = {
 export const QueryMode = {
     default: 'default',
     insensitive: 'insensitive'
+};
+export const NullsOrder = {
+    first: 'first',
+    last: 'last'
 };
 export const defineExtension = runtime.Extensions.defineExtension;
 //# sourceMappingURL=prismaNamespace.js.map

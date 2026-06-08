@@ -3,7 +3,6 @@ import { prisma } from "../../config/database.js";
 import { UserRepository } from "./user.repository.js";
 import { userPublicFields } from "./user.types.js";
 export class UserService {
-    userRepository;
     constructor(userRepository = new UserRepository()) {
         this.userRepository = userRepository;
     }

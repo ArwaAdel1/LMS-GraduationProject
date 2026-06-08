@@ -26,4 +26,19 @@ export { Prisma };
  *
  */
 export type User = Prisma.UserModel;
+/**
+ * Model StudentProfile
+ *
+ */
+export type StudentProfile = Prisma.StudentProfileModel;
+/**
+ * Model Otp
+ *
+ */
+export type Otp = Prisma.OtpModel;
+/**
+ * Model RefreshToken
+ *
+ */
+export type RefreshToken = Prisma.RefreshTokenModel;
 //# sourceMappingURL=client.d.ts.map

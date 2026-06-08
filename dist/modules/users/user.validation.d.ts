@@ -1,8 +1,8 @@
 import { z } from "zod";
 export declare const userRoleSchema: z.ZodEnum<{
-    ADMIN: "ADMIN";
     STUDENT: "STUDENT";
     OPERATION: "OPERATION";
+    ADMIN: "ADMIN";
 }>;
 export declare const createUserSchema: z.ZodObject<{
     fullName: z.ZodString;
@@ -10,9 +10,9 @@ export declare const createUserSchema: z.ZodObject<{
     password: z.ZodString;
     mobile: z.ZodString;
     role: z.ZodDefault<z.ZodEnum<{
-        ADMIN: "ADMIN";
         STUDENT: "STUDENT";
         OPERATION: "OPERATION";
+        ADMIN: "ADMIN";
     }>>;
 }, z.core.$strip>;
 export declare const updateUserSchema: z.ZodObject<{
@@ -21,9 +21,9 @@ export declare const updateUserSchema: z.ZodObject<{
     password: z.ZodOptional<z.ZodString>;
     mobile: z.ZodOptional<z.ZodString>;
     role: z.ZodOptional<z.ZodEnum<{
-        ADMIN: "ADMIN";
         STUDENT: "STUDENT";
         OPERATION: "OPERATION";
+        ADMIN: "ADMIN";
     }>>;
 }, z.core.$strip>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;

@@ -1,4 +1,4 @@
-import express, {} from "express";
+import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -18,7 +18,7 @@ export function createApp() {
     app.get("/health", (_req, res) => {
         res.json({ status: "ok" });
     });
-    app.use("/api/auth", authRoutes);
+    app.use("/api/v1/auth", authRoutes);
     app.use("/api/users", userRoutes);
     app.use(notFoundHandler);
     app.use(errorHandler);

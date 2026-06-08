@@ -4,7 +4,7 @@ import { logger } from "./config/logger.js";
 
 const app = createApp();
 
-const port = env.PORT;
+const port = env.PORT || 3000;
 
 app.listen(port, () => {
   logger.info(`Server listening on port ${port}`);

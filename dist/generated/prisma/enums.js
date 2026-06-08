@@ -12,4 +12,13 @@ export const Role = {
     STUDENT: 'STUDENT',
     OPERATION: 'OPERATION'
 };
+export const Status = {
+    ACTIVE: 'ACTIVE',
+    INACTIVE: 'INACTIVE',
+    BANNED: 'BANNED'
+};
+export const OtpType = {
+    EMAIL_VERIFICATION: 'EMAIL_VERIFICATION',
+    PASSWORD_RESET: 'PASSWORD_RESET'
+};
 //# sourceMappingURL=enums.js.map

@@ -1,9 +1,10 @@
+import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
-import { Role, Status } from "../../generated/prisma/client.js";
+import { OtpType, Role, Status } from "../../generated/prisma/client.js";
 import { prisma } from "../../config/database.js";
 import { userPublicFields } from "../users/user.types.js";
 import { TokenService } from "./token.service.js";
-import type { RegisterInput } from "./auth.validation.js";
+import type { RegisterInput, ForgotPasswordInput, ResetPasswordInput } from "./auth.validation.js";
 import type { ApiError } from "../../shared/types/common.types.js";
 
 export class AuthService {
@@ -72,5 +73,114 @@ export class AuthService {
 
     // Return user WITHOUT password + accessToken
     return { user, accessToken };
+  }
+
+  public async forgotPassword(input: ForgotPasswordInput) {
+    // 1. Find user by mobile
+    const user = await prisma.user.findUnique({
+      where: { mobile: input.mobile },
+      select: { id: true },
+    });
+
+    if (!user) {
+      const error = new Error("User not found") as ApiError;
+      error.status = 404;
+      throw error;
+    }
+
+    // 2. Rate limit: max 3 OTP requests per phone per hour
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const recentOtpCount = await prisma.otp.count({
+      where: {
+        userId: user.id,
+        type: OtpType.PASSWORD_RESET,
+        createdAt: { gte: oneHourAgo },
+      },
+    });
+
+    if (recentOtpCount >= 3) {
+      const error = new Error(
+        "Too many OTP requests. Try again in an hour",
+      ) as ApiError;
+      error.status = 429;
+      throw error;
+    }
+
+    // 3. Generate 6-digit OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+
+    // 4. Hash OTP (salt rounds = 10 for speed, not stored password)
+    const hashedOtp = await bcrypt.hash(otp, 10);
+
+    // 5. Store hashed OTP with 5-minute expiry
+    await prisma.otp.create({
+      data: {
+        code: hashedOtp,
+        type: OtpType.PASSWORD_RESET,
+        userId: user.id,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    });
+
+    // 6. MVP: console.log — SMS integration in v2
+    console.log(`[OTP] ${input.mobile}: ${otp}`);
+
+    return { message: "OTP sent successfully" };
+  }
+
+  public async resetPassword(input: ResetPasswordInput) {
+    // 1. Find user by mobile
+    const user = await prisma.user.findUnique({
+      where: { mobile: input.mobile },
+      select: { id: true },
+    });
+
+    if (!user) {
+      const error = new Error("User not found") as ApiError;
+      error.status = 404;
+      throw error;
+    }
+
+    // 2. Find latest unused, non-expired PASSWORD_RESET OTP
+    const storedOtp = await prisma.otp.findFirst({
+      where: {
+        userId: user.id,
+        type: OtpType.PASSWORD_RESET,
+        usedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!storedOtp) {
+      const error = new Error("Invalid or expired OTP") as ApiError;
+      error.status = 400;
+      throw error;
+    }
+
+    // 3. Verify OTP against stored hash
+    const isOtpValid = await bcrypt.compare(input.otp, storedOtp.code);
+
+    if (!isOtpValid) {
+      const error = new Error("Invalid or expired OTP") as ApiError;
+      error.status = 400;
+      throw error;
+    }
+
+    // 4. Atomic transaction: update password + mark OTP as used
+    const hashedPassword = await bcrypt.hash(input.newPassword, 12);
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+      }),
+      prisma.otp.update({
+        where: { id: storedOtp.id },
+        data: { usedAt: new Date() },
+      }),
+    ]);
+
+    return { message: "Password reset successful" };
   }
 }

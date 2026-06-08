@@ -1,7 +1,3 @@
-import type { CreateUserInput } from "../users/user.validation.js";
-export interface LoginInput {
-    email: string;
-    password: string;
-}
-export type RegisterInput = Omit<CreateUserInput, "role">;
+export type RegisterInput = import("./auth.validation.js").RegisterInput;
+export type LoginInput = import("./auth.validation.js").LoginInput;
 //# sourceMappingURL=auth.types.d.ts.map
