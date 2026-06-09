@@ -1,1 +1,0 @@
-{"version":3,"file":"authorize.middleware.js","sourceRoot":"","sources":["../../../src/shared/middlewares/authorize.middleware.ts"],"names":[],"mappings":"AAEA,MAAM,UAAU,mBAAmB,CAAC,KAAe;IACjD,OAAO,CAAC,IAAa,EAAE,IAAc,EAAE,IAAkB,EAAE,EAAE;QAC3D,KAAK,KAAK,CAAC;QACX,IAAI,EAAE,CAAC;IACT,CAAC,CAAC;AACJ,CAAC"}
